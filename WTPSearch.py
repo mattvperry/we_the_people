@@ -2,7 +2,7 @@
 # Web Science - Fall 2011
 # We The People search base class
 
-import sys
+from sys import argv, stderr
 from WTPLib.SearchBase import SearchBase
 from WTPLib.rank import rank
 
@@ -19,8 +19,8 @@ class WTPSearch(SearchBase):
 
 if __name__ == '__main__':
     '''Main function'''
-    if len(sys.argv) < 2:
-        sys.stderr.write('Usage: %s <query> [# results per page]\n' % sys.argv[0])
+    if len(argv) < 2:
+        stderr.write('Usage: %s <query> [# results per page]\n' % argv[0])
         exit()
-    rpp = int(sys.argv[2]) if len(sys.argv) > 2 else 25
-    WTPSearch().search(sys.argv[1], rpp)
+    rpp = int(argv[2]) if len(argv) > 2 else 25
+    WTPSearch().search(argv[1], rpp)

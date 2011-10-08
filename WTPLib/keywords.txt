@@ -1,0 +1,26 @@
+wethepeople 10
+democracy 10
+petition 10
+white house 10
+president 9
+executive 9
+build support 9
+issues 8
+politics 8
+obama 8
+government 7
+signatures 7
+congress 7
+america 6
+united states 5
+controversy 4
+barack 3
+biden 3
+legislature 3
+legislation 3
+judicial 2
+supreme court 2
+democrat 2
+republican 2
+administration 1
+bipartisan 1

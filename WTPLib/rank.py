@@ -5,4 +5,6 @@
 from WeightedResult import WeightedResult
 
 def rank(results):
-    return [WeightedResult(res) for res in results]
+    '''Given a list of results, rank them using our algorithm'''
+    results = [WeightedResult(res) for res in results]
+    return results
