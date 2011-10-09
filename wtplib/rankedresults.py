@@ -19,10 +19,13 @@ def rank(results):
     '''Turn each result into a weighted result and then sort'''
     return sorted([WeightedResult(res) for res in results], reverse=True)
 
-def new_query(query):
+def new_query(query, top=5):
     '''Given a query, return a new query which can be used for
     further manipulation of the initial search results'''
-    return query + ' petition'
+    # Pick from the top 5 keywords modulo the size of the query
+    # so results are consistent
+    sorted_keywords = sorted(keywords(), key=keywords().get, reverse=True)
+    return ' '.join([query, sorted_keywords[len(query) % top]])
 
 class WeightedResult:
     debug = True
