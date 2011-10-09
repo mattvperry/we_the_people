@@ -3,8 +3,8 @@
 # We The People search base class
 
 from sys import argv, stderr
-from WTPLib.SearchBase import SearchBase
-from WTPLib.rank import rank
+from wtplib.searchbase import SearchBase
+from wtplib.rankedresults import rank
 
 class WTPSearch(SearchBase):
     def search(self, query, rpp, write = True):
