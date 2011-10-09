@@ -7,6 +7,7 @@ from string import maketrans, punctuation
 from collections import defaultdict
 from constants import keywords
 from signals import SignalVector
+from whitehousesearch import WhiteHouseSearch
 
 def rank(results):
     '''Given a list of results, rank them using our algorithm'''
