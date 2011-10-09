@@ -1,6 +1,6 @@
 # Chalupa Loveseats
 # Web Science - Fall 2011
-# We The People search signal collection vector
+# We The People search signals
 
 from sys import modules
 from constants import keywords, signaldata
@@ -26,14 +26,20 @@ class SignalVector:
 def weight(word_matrix):
     '''Simple addition of weights of each keyword
     appearing in the result'''
-    return 1
+    # TODO: Apply some kind of decay function to the number of times the keyword appears
+    word_weight = lambda x, y: keywords()[x] * len(word_matrix[y].words[x])
+    title = sum([word_weight(x, 'title') for x in word_matrix['title'].words])
+    desc = sum([word_weight(x, 'desc') for x in word_matrix['desc'].words])
+    return title + desc
 
 def location(word_matrix):
     '''Apply additional weight to keywords appearing
     in the header of the result'''
-    return 1
+    # TODO: Apply some kind of decay function to the number of times the keyword appears
+    word_weight = lambda x, y: keywords()[x] * len(word_matrix[y].words[x])
+    return sum([word_weight(x, 'title') for x in word_matrix['title'].words])
 
 def proximity(word_matrix):
     '''Apply additional weight to keywords which
     appear close to other keywords'''
-    return 1
+    return 0

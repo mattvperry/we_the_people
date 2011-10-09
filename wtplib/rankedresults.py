@@ -1,6 +1,6 @@
 # Chalupa Loveseats
 # Web Science - Fall 2011
-# We The People search weighted result class
+# We The People search ranking classes
 
 import re
 from string import maketrans, punctuation
@@ -11,6 +11,7 @@ from signals import SignalVector
 def rank(results):
     '''Given a list of results, rank them using our algorithm'''
     results = [WeightedResult(res) for res in results]
+    results.sort(reverse=True)
     return results
 
 class WeightedResult:
@@ -32,6 +33,9 @@ class WeightedResult:
         return {meth : keyword_analysis(meth) for meth in args}
 
     # Built-ins extension
+    def __lt__(self, other):
+        return True if self.weight < other.weight else False
+
     def __str__(self):
         '''For use with str() function'''
         if self.__class__.debug:
