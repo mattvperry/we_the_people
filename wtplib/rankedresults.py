@@ -7,13 +7,17 @@ from string import maketrans, punctuation
 from collections import defaultdict
 from constants import keywords
 from signals import SignalVector
-from whitehousesearch import WhiteHouseSearch
+
+def inject(primary, secondary):
+    '''Inject a secondary list into the primary list
+    Append the first three secondary items to the first ten
+    primary items, sort and reappend to the entire primary list'''
+    top_ten = primary[:10] + secondary[:3]
+    return sorted(top_ten, reverse=True) + primary[10:]
 
 def rank(results):
-    '''Given a list of results, rank them using our algorithm'''
-    results = [WeightedResult(res) for res in results]
-    results.sort(reverse=True)
-    return results
+    '''Turn each result into a weighted result and then sort'''
+    return sorted([WeightedResult(res) for res in results], reverse=True)
 
 class WeightedResult:
     debug = True
@@ -35,7 +39,8 @@ class WeightedResult:
 
     # Built-ins extension
     def __lt__(self, other):
-        return True if self.weight < other.weight else False
+        '''For use with < operator'''
+        return self.weight < other.weight
 
     def __str__(self):
         '''For use with str() function'''

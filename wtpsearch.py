@@ -4,18 +4,34 @@
 
 from sys import argv, stderr
 from wtplib.searchbase import SearchBase
-from wtplib.rankedresults import rank
+from wtplib.whitehousesearch import WhiteHouseSearch
+from wtplib.rankedresults import rank, inject
 
 class WTPSearch(SearchBase):
     def search(self, query, rpp, write = True):
         '''Function to call xgoogle library and rank results'''
-        self.results = rank(super(WTPSearch, self).search(query, rpp))
-        self.print_results() if write else None
+        self.query = query
+        self.rpp = rpp
+        self.__get_results(query, rpp)
+        self.__print_results() if write else None
         return self.results
 
-    def print_results(self):
+    # Python psuedo-private methods
+    def __google_search(self):
+        return super(WTPSearch, self).search(self.query, self.rpp)
+
+    def __whitehouse_search(self):
+        return WhiteHouseSearch(self.query).get_results()
+
+    def __get_results(self, query, rpp):
+        '''Retrieve and rank results using our algorithm'''
+        google = rank(self.__google_search())
+        whitehouse = rank(self.__whitehouse_search())
+        self.results = inject(google, whitehouse)
+
+    def __print_results(self):
         '''Function which prints out each result'''
-        print '\n'.join([str(res) for res in self.results])
+        print '\n'.join([str(res) for res in self.results[:self.rpp]])
 
 if __name__ == '__main__':
     '''Main function'''

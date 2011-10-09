@@ -30,7 +30,7 @@ class WhiteHouseSearch:
     def __create_result(self, tag):
         '''Parse each part of the response HTML into a result object'''
         match = self.__class__.regex.search(str(tag))
-        WhiteHouseResult(match.groupdict())
+        return WhiteHouseResult(match.groupdict())
 
 # Class to coerce results from the whitehouse into results
 # similar to xgoogle
@@ -41,4 +41,4 @@ class WhiteHouseResult:
         '''Initialize member variables'''
         self.title = self.__class__.title
         self.desc = info_dict['title']
-        self.url = info_dict['sigs']
+        self.url = info_dict['sigs'] + ' Signatures'
