@@ -8,16 +8,21 @@ from collections import defaultdict
 from constants import keywords
 from signals import SignalVector
 
-def inject(primary, secondary):
+def inject(primary, secondary, p_num=10, s_num=3):
     '''Inject a secondary list into the primary list
-    Append the first three secondary items to the first ten
+    Append the first s_num secondary items to the first p_num
     primary items, sort and reappend to the entire primary list'''
-    top_ten = primary[:10] + secondary[:3]
-    return sorted(top_ten, reverse=True) + primary[10:]
+    top_ten = primary[:p_num] + secondary[:s_num]
+    return sorted(top_ten, reverse=True) + primary[p_num:]
 
 def rank(results):
     '''Turn each result into a weighted result and then sort'''
     return sorted([WeightedResult(res) for res in results], reverse=True)
+
+def new_query(query):
+    '''Given a query, return a new query which can be used for
+    further manipulation of the initial search results'''
+    return query + ' petition'
 
 class WeightedResult:
     debug = True
