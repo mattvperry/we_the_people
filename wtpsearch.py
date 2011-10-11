@@ -33,7 +33,7 @@ class WTPSearch(SearchBase):
     def __get_results(self, query):
         '''Retrieve and rank results using our algorithm'''
         google = rank(self.__google_search(query))
-        whitehouse = rank(self.__whitehouse_search(query))
+        whitehouse = rank(self.__whitehouse_search(query), 2)
         results = inject(google, whitehouse)
 
         # Inject new query term if needed

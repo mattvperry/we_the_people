@@ -42,4 +42,21 @@ def location(word_matrix):
 def proximity(word_matrix):
     '''Apply additional weight to keywords which
     appear close to other keywords'''
-    return 0
+    distance_sum = 0
+    for section in ['title', 'desc']:
+        words_hash = word_matrix[section].words
+        if len(words_hash) <= 1:
+            break
+        for (word, locations) in words_hash.items():
+            for (word2, locations2) in words_hash.items():
+                if word == word2:
+                    continue
+                for location in locations:
+                    for location2 in locations2:
+                        if location > location2:
+                            distance_sum += location - (location2 + len(word2))
+                        elif location < location2:
+                            distance_sum += location2 - (location + len(word))
+        if len(words_hash) > 0:
+            distance_sum //= len(words_hash)
+    return distance_sum // 2

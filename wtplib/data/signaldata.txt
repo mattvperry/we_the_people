@@ -1,3 +1,0 @@
-location 1.0
-weight 1.0
-proximity 1.0

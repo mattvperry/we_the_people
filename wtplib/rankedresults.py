@@ -5,7 +5,7 @@
 import re
 from string import maketrans, punctuation
 from collections import defaultdict
-from constants import keywords
+from constants import keywords, taglines
 from signals import SignalVector
 
 def inject(primary, secondary, p_num=10, s_num=3):
@@ -15,13 +15,14 @@ def inject(primary, secondary, p_num=10, s_num=3):
     top_ten = primary[:p_num] + secondary[:s_num]
     return sorted(top_ten, reverse=True) + primary[p_num:]
 
-def rank(results):
+def rank(results, extra_weight=1):
     '''Turn each result into a weighted result and then sort'''
-    return sorted([WeightedResult(res) for res in results], reverse=True)
+    return sorted([WeightedResult(res, extra_weight) for res in results], reverse=True)
 
-def new_query(query, top=5):
+def new_query(query):
     '''Given a query, return a new query which can be used for
     further manipulation of the initial search results'''
+    # return '%s %s' % (query, 'petition') # Too Obvious
     # Pick from the top 5 keywords modulo the size of the query
     # so results are consistent
     sorted_keywords = sorted(keywords(), key=keywords().get, reverse=True)
@@ -30,13 +31,14 @@ def new_query(query, top=5):
 class WeightedResult:
     debug = True
 
-    def __init__(self, result):
+    def __init__(self, result, extra_weight=1):
         '''Initialize member variables'''
         self.title = result.title.encode('utf-8')
         self.desc = result.desc.encode('utf-8')
         self.url = result.url.encode('utf-8')
         self.keywords = self.__collect_keywords('title', 'desc')
-        self.weight = SignalVector(self.keywords).total_weight
+        self.weight = SignalVector(self.keywords).total_weight * extra_weight
+        self.tagline = self.__find_tagline()
 
     # Python psuedo-private methods
     def __collect_keywords(self, *args):
@@ -45,6 +47,15 @@ class WeightedResult:
         keyword_analysis = lambda x: KeywordList(getattr(self, x))
         return {meth : keyword_analysis(meth) for meth in args}
 
+    def __find_tagline(self):
+        '''Decide if a tagline should go here, and decide which one.'''
+        sections = [self.keywords[section].words for section in self.keywords]
+        all_keywords = set(reduce(lambda x, y: x.keys() + y.keys(), sections))
+        if len(all_keywords) > 0:
+            top_keyword = max(all_keywords, key=keywords().get)
+            if top_keyword in taglines():
+                return taglines()[top_keyword]
+
     # Built-ins extension
     def __lt__(self, other):
         '''For use with < operator'''
@@ -52,10 +63,12 @@ class WeightedResult:
 
     def __str__(self):
         '''For use with str() function'''
+        prepend = postpend = ''
         if self.__class__.debug:
-            return ('Weight: %d\n%s\n%s\n%s\n' % (self.weight, self.title, self.desc, self.url))
-        else:
-            return ('%s\n%s\n%s\n' % (self.title, self.desc, self.url))
+            prepend = 'Weight: %d\n' % (self.weight)
+        if self.tagline:
+            postpend = '[%s]\n' % self.tagline
+        return prepend + ('%s\n%s\n%s\n' % (self.title, self.desc, self.url)) + postpend
 
 class KeywordList:
     def __init__(self, string):
