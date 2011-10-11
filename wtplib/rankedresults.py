@@ -15,9 +15,9 @@ def inject(primary, secondary, p_num=10, s_num=3):
     top_ten = primary[:p_num] + secondary[:s_num]
     return sorted(top_ten, reverse=True) + primary[p_num:]
 
-def rank(results, extra_weight=1):
+def rank(results, extra_weight=1, injected=False):
     '''Turn each result into a weighted result and then sort'''
-    return sorted([WeightedResult(res, extra_weight) for res in results], reverse=True)
+    return sorted([WeightedResult(res, extra_weight, injected) for res in results], reverse=True)
 
 def new_query(query, top=5):
     '''Given a query, return a new query which can be used for
@@ -31,14 +31,14 @@ def new_query(query, top=5):
 class WeightedResult:
     debug = True
 
-    def __init__(self, result, extra_weight=1):
+    def __init__(self, result, extra_weight=1, injected=False):
         '''Initialize member variables'''
         self.title = result.title.encode('utf-8')
         self.desc = result.desc.encode('utf-8')
         self.url = result.url.encode('utf-8')
         self.keywords = self.__collect_keywords('title', 'desc')
         self.weight = SignalVector(self.keywords).total_weight * extra_weight
-        self.tagline = self.__find_tagline()
+        self.tagline = self.__find_tagline() if injected else ''
 
     # Python psuedo-private methods
     def __collect_keywords(self, *args):
@@ -65,10 +65,11 @@ class WeightedResult:
         '''For use with str() function'''
         prepend = postpend = ''
         if self.__class__.debug:
-            prepend = 'Weight: %d\n' % (self.weight)
+            prepend = ('Weight: %d\n' % (self.weight))
         if self.tagline:
-            postpend = '[%s]\n' % self.tagline
-        return prepend + ('%s\n%s\n%s\n' % (self.title, self.desc, self.url)) + postpend
+            postpend = ('[%s]\n' % self.tagline)
+        return '%s%s\n%s\n%s\n%s' % (prepend, self.title,
+            self.desc, self.url, postpend)
 
 class KeywordList:
     def __init__(self, string):

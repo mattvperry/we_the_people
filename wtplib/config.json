@@ -29,11 +29,14 @@
     },
 
     "signaldata": {
-        "location": 1.0,
-        "weight": 1.0,
-        "proximity": 1.0
+        "location": 0.9,
+        "weight": 1.2,
+        "proximity": 0.8
     },
 
     "taglines": {
+        "petition": "Did you know you can vote for this issue on www.whitehouse.gov/petitions?",
+        "white house": "Did you know the White House created a new website to create and sign petitions?",
+        "government": "Make a say in your government. Create a petiton on www.whitehouse.gov/petitions"
     }
 }

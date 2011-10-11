@@ -39,8 +39,9 @@ class WTPSearch(SearchBase):
         # Inject new query term if needed
         if self.__requires_manipulation(results):
             query = new_query(query)
-            google2 = rank(self.__google_search(query))
-            results = inject(results, google2, 20, 10)
+            google2 = rank(self.__google_search(query), injected=True)
+            results_size = len(results)
+            results = inject(results, google2, results_size / 2, int(results_size * .1))
 
         self.results = results
 
